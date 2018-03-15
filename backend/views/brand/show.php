@@ -1,4 +1,3 @@
-<a href="<?=yii\helpers\Url::to(['add'])?>" class="btn btn-primary">添加</a>
 <table class="table table-condensed table-hover">
     <tr>
         <th>id</th>
@@ -16,19 +15,14 @@
             <td class="active"><?=$brand->id?></td>
             <td class="active"><?=$brand->name?></td>
             <td class="success"><img src="/<?=$brand->logo?>" width="30" style="border-radius: 50%"></td>
-            <td class="info"><?=$sta[$brand->status]?></td>
+            <td class="info"><?=$brand->status?></td>
             <td class="success"><?=$brand->sort?></td>
             <td class="info"><?=$brand->intro?></td>
             <td class="active">
                 <a href="<?=yii\helpers\Url::to(['edit','id'=>$brand->id])?>" class="btn btn-warning btn-sm">编辑</a>
-                <a href="<?=yii\helpers\Url::to(['del','id'=>$brand->id])?>" class="btn btn-danger btn-sm">隐藏</a>
-                <a href="<?=yii\helpers\Url::to(['show'])?>" class="btn btn-danger btn-sm">显示</a>
             </td>
         </tr>
         <?php
     endforeach;
     ?>
 </table>
-<?=\yii\widgets\LinkPager::widget([
-    "pagination" => $page,
-])?>

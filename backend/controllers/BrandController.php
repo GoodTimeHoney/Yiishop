@@ -15,13 +15,13 @@ class BrandController extends \yii\web\Controller
     public function actionIndex()
     {
         $sta=["下线","上线"];
-        $query=Brand::find();
+        $query=Brand::find()->where(["status"=>1])->orderBy(["sort"=>"desc"]);
 
         $count=$query->count();//得到总条数
 
         // 使用总数来创建一个分页对象
         $page = new Pagination([
-            "pageSize"=>4,//每页现实条数
+            "pageSize"=>2,//每页现实条数
             "totalCount" => $count ,//总条数
 
         ]);
@@ -129,9 +129,16 @@ class BrandController extends \yii\web\Controller
 
     //删除
     public  function  actionDel($id){
-        if(Brand::findOne($id)->delete()){
+          $result= Brand::updateAll(["status"=>0],["id"=>$id]);
             //跳转到现实界面
             return $this->redirect(["index"]);
-        }
+
+    }
+
+    public  function  actionShow(){
+         $brands=Brand::find()->all();
+
+         return $this->render("show",compact("brands"));
+
     }
 }
