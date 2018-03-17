@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Brand;
 use yii\data\Pagination;
+use yii\helpers\Json;
 use yii\web\UploadedFile;
 
 class BrandController extends \yii\web\Controller
@@ -45,7 +46,7 @@ class BrandController extends \yii\web\Controller
             //绑定数据
             $brand->load($request->post());
              //得到图片上传文件
-            $brand->imgFile=UploadedFile::getInstance($brand,'imgFile');
+          /*  $brand->imgFile=UploadedFile::getInstance($brand,'imgFile');
 //            var_dump($brand->imgFile);exit;
             //定义一个空字符串
             $imgPath="";
@@ -55,12 +56,12 @@ class BrandController extends \yii\web\Controller
                 $imgPath="images/".time().".".$brand->imgFile->extension;
                 //移动到imgPath中
                 $brand->imgFile->saveAs($imgPath,false);
-            }
+            }*/
 
             //后台验证
             if($brand->validate()){
                 //给logo赋值
-                $brand->logo=$imgPath;
+              //  $brand->logo=$imgPath;
                    //保存数据
                 if ($brand->save(false)) {
                       //保存成功
@@ -91,7 +92,7 @@ class BrandController extends \yii\web\Controller
             //绑定数据
             $brand->load($request->post());
 
-            //得到图片上传文件
+           /* //得到图片上传文件
             $brand->imgFile=UploadedFile::getInstance($brand,'imgFile');
 //            var_dump($brand->imgFile);exit;
             //定义一个空字符串
@@ -102,14 +103,15 @@ class BrandController extends \yii\web\Controller
                 $imgPath="images/".time().".".$brand->imgFile->extension;
                 //移动到imgPath中
                 $brand->imgFile->saveAs($imgPath,false);
-            }
+            }*/
+
 
             //后台验证
             if($brand->validate()){
-                if($imgPath){
+                /*if($imgPath){
                     //给logo赋值
                     $brand->logo=$imgPath;
-                }
+                }*/
                 //保存数据
                 if ($brand->save(false)) {
                     //保存成功
@@ -141,4 +143,41 @@ class BrandController extends \yii\web\Controller
          return $this->render("show",compact("brands"));
 
     }
+
+
+
+    //声明一个webupload方法
+    public  function  actionUpload(){
+        //得到文件上传对象
+        $getFile=UploadedFile::getInstanceByName("file");
+//        var_dump($getFile);
+        //移动目录
+        if($getFile!==null){
+            //拼路径
+            $imgPath="images/".time().".".$getFile->extension;
+            //移动
+           if ($getFile->saveAs($imgPath,false)) {
+                //正确时
+               $fish=[
+                   'code'=>0,
+                   'url'=>'/'.$imgPath,
+                   'attachment'=>$imgPath
+               ];
+               //返回数据
+              return Json::encode($fish);
+           }
+        }else{
+            //错误时
+            $result=[
+                 'code'=>1,
+                'msg'=>'error'
+            ];
+            //返回数据
+            return Json::encode($result);
+        }
+
+    }
+
+
+
 }

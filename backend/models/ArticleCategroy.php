@@ -5,20 +5,17 @@ namespace backend\models;
 use Yii;
 
 /**
- * This is the model class for table "brand".
+ * This is the model class for table "article_categroy".
  *
  * @property int $id
  * @property string $name 名称
- * @property string $logo 头像
+ * @property string $introduce 简历
  * @property int $sort 排序
  * @property int $status 状态
- * @property string $intro 简历
+ * @property int $is_help 是否帮助
  */
-class Brand extends \yii\db\ActiveRecord
+class ArticleCategroy extends \yii\db\ActiveRecord
 {
-      //定义一个文件属性
-   // public  $imgFile;
-    //public  $code;
 
     /**
      * @inheritdoc
@@ -26,10 +23,10 @@ class Brand extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name',"sort","status","logo"], 'required'],
-        //    ["imgFile","image","extensions" => ['jpg','gif','png']],
-            ["intro","safe"],
-
+            [['name','status','sort'], 'required'],
+            [['sort','is_help'],'integer'],
+            ["introduce","safe"],
+            ['name','unique'],
         ];
     }
 
@@ -41,11 +38,10 @@ class Brand extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => '名称',
-            'logo' => '头像',
+            'introduce' => '简介',
             'sort' => '排序',
             'status' => '状态',
-            'intro' => '简历',
-           // 'imgFile' => '图片',
+            'is_help' => '帮助状态',
         ];
     }
 }
