@@ -15,7 +15,13 @@
         <tr>
             <td class="active"><?=$brand->id?></td>
             <td class="active"><?=$brand->name?></td>
-            <td class="info"><img src="/<?=$brand->logo?>" width="30" style="border-radius: 50%"></td>
+            <td class="info">
+                 <?php
+                $imgPath=strpos($brand->logo,'ttp://')?$brand->logo:"/".$brand->logo;
+                echo \yii\bootstrap\Html::img($imgPath,['height'=>40]);
+                ?>
+
+            </td>
             <td class="info"><?=$sta[$brand->status]?></td>
             <td class="success"><?=$brand->sort?></td>
             <td class="info"><?=$brand->intro?></td>

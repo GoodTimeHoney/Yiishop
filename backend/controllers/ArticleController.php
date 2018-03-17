@@ -12,6 +12,16 @@ use yii\helpers\ArrayHelper;
 
 class ArticleController extends \yii\web\Controller
 {
+
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+            ]
+        ];
+    }
+
    //现实列表
     public function actionIndex()
     {
@@ -85,6 +95,7 @@ class ArticleController extends \yii\web\Controller
     }
 
 
+    //编辑
     public  function  actionEdit($id){
         //创建文章模型
         $article=Article::findOne($id);
@@ -131,6 +142,8 @@ class ArticleController extends \yii\web\Controller
         return $this->render("add",compact("article",'artContent',"catesArr"));
     }
 
+
+    //删除
     public  function  actionDel($id){
          if(Article::findOne($id)->delete()){
                 if(ArticleContent::findOne($id)->delete()){

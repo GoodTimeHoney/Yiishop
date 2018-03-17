@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\Brand;
+use crazyfd\qiniu\Qiniu;
 use yii\data\Pagination;
 use yii\helpers\Json;
 use yii\web\UploadedFile;
@@ -148,35 +149,61 @@ class BrandController extends \yii\web\Controller
 
     //声明一个webupload方法
     public  function  actionUpload(){
-        //得到文件上传对象
-        $getFile=UploadedFile::getInstanceByName("file");
+
+        switch (\Yii::$app->params["uploadType"]){
+            case "127.0.0.1":
+                //得到文件上传对象
+                $getFile=UploadedFile::getInstanceByName("file");
 //        var_dump($getFile);
-        //移动目录
-        if($getFile!==null){
-            //拼路径
-            $imgPath="images/".time().".".$getFile->extension;
-            //移动
-           if ($getFile->saveAs($imgPath,false)) {
-                //正确时
-               $fish=[
-                   'code'=>0,
-                   'url'=>'/'.$imgPath,
-                   'attachment'=>$imgPath
-               ];
-               //返回数据
-              return Json::encode($fish);
-           }
-        }else{
-            //错误时
-            $result=[
-                 'code'=>1,
-                'msg'=>'error'
-            ];
-            //返回数据
-            return Json::encode($result);
+                //移动目录
+                if($getFile!==null){
+                    //拼路径
+                    $imgPath="images/".time().".".$getFile->extension;
+                    //移动
+                    if ($getFile->saveAs($imgPath,false)) {
+                        //正确时
+                        $fish=[
+                            'code'=>0,
+                            'url'=>'/'.$imgPath,
+                            'attachment'=>$imgPath
+                        ];
+                        //返回数据
+                        return Json::encode($fish);
+                    }
+                }else{
+                    //错误时
+                    $result=[
+                        'code'=>1,
+                        'msg'=>'error'
+                    ];
+                    //返回数据
+                    return Json::encode($result);
+                }
+            case "qiuniu":
+                $ak = '19wzF5o5gx3-rLRYGy4hWuLXsSkSbgC01o1PnEsS'; //应用的ID
+                $sk = 'YnFp544elS2sMRjCOde11npoWNghGsscWZcxkzTi'; //密钥
+                $domain = 'http://p5o8t6bf3.bkt.clouddn.com/';  //地址
+                $bucket = '1108xiaoming'; // 空间名称
+                $zone = 'south_china'; //区域
+                $qiniu = new Qiniu($ak, $sk, $domain, $bucket, $zone);
+                $key = time();
+                $key .= strtolower(strrchr($_FILES['file']['name'], '.'));
+
+                $qiniu->uploadFile($_FILES['file']['tmp_name'], $key);
+                $url = $qiniu->getLink($key);
+//        var_dump($url);exit;
+                $fish=[
+                    'code'=>0,
+                    'url'=>$url,
+                    'attachment'=>$url
+                ];
+                //返回数据
+                return Json::encode($fish);
+
         }
 
     }
+
 
 
 
