@@ -8,10 +8,13 @@ use yii\bootstrap\Html;
 
 class AdminController extends \yii\web\Controller
 {
+    //会员显示
     public function actionIndex()
     {
-        return $this->render('index');
+        $admins=Admin::find()->all();
+        return $this->render('index',compact("admins"));
     }
+    //会员登录
      public  function  actionLogin(){
             //生成一个表单模式
          $model=new  LoginForm();
@@ -36,7 +39,7 @@ class AdminController extends \yii\web\Controller
                      if($admin->save()){
                          \Yii::$app->session->setFlash("danger","登录成功");
                          //跳转到首页
-                         return $this->redirect(["brand/index"]);
+                         return $this->redirect(["admin/index"]);
                      }else{
                          var_dump($admin->errors);exit;
                      }
@@ -56,6 +59,56 @@ class AdminController extends \yii\web\Controller
          return $this->render("login",compact("model"));
      }
 
+
+     //会员添加
+    public  function  actionAdd(){
+         $admin=new  Admin();
+         $request=\Yii::$app->request;
+         if($request->isPost){
+             $admin->load($request->post());
+             if($admin->validate()){
+                 $admin->token_create_time=time();
+                 $admin->add_time=time();
+                     if($admin->save()){
+                         \Yii::$app->session->setFlash("success","添加成功");
+                         return $this->redirect(["index"]);
+                     }
+             }else{
+                 var_dump($admin->errors);exit;
+             }
+         }
+         return $this->render("add",compact("admin"));
+    }
+
+    //会员编辑
+    public  function  actionEdit($id){
+        $admin=Admin::findOne($id);
+        $request=\Yii::$app->request;
+        if($request->isPost){
+            $admin->load($request->post());
+            if($admin->validate()){
+                $admin->token_create_time=time();
+                $admin->add_time=time();
+                if($admin->save()){
+                    \Yii::$app->session->setFlash("success","添加成功");
+                    return $this->redirect(["index"]);
+                }
+            }else{
+                var_dump($admin->errors);exit;
+            }
+        }
+        return $this->render("add",compact("admin"));
+    }
+
+   //删除
+    public  function  actionDel($id){
+        if(Admin::findOne($id)->delete()){
+            \Yii::$app->session->setFlash("danger","删除成功");
+            return $this->redirect(["index"]);
+        }
+    }
+
+   //会员退出
      public  function  actionLogout(){
          \Yii::$app->user->logout();
          return $this->redirect(["login"]);

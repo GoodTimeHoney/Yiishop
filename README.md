@@ -58,5 +58,5 @@ frontend
 vendor/                  contains dependent 3rd-party packages
 environments/            contains environment-based overrides
 ```
-# day3 无限极分类
-  无限极分类我们运用的数据迁移来建立的表，数据表的规则是左小右大来设计的。数据显示我们巧妙的运用了treegrid组件来实现，添加我们运用的则是zTree来实现，在treegrid组件中，我们发现了id的错位，我们的解决方案是$key=$model->id。
+# day4-day5
+此项目主要是goods、goods_gallery、goods_intro和admin的运用。在这两天的运用中我们学习到了无限极分类，多图上传，富文本，和ztree的用法，在admin的登录过程，我们一定要记得重写，切记别入坑，当然我也知道了怎么获取客户端的地址---ipYii::$app->request->userIP。

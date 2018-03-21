@@ -25,8 +25,9 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [[ 'sait', 'email', 'token', 'add_time', 'last_login_time'], 'safe'],
+            [[ 'sait', 'email', 'token', 'add_time', 'token_create_time'], 'safe'],
             [['password','username'],'required'],
+            ["email","email"],
         ];
     }
 
