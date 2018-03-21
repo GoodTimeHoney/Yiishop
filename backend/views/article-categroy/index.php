@@ -1,3 +1,5 @@
+<h1>文章分类表</h1>
+
 <a href="<?=yii\helpers\Url::to(['add'])?>" class="btn btn-primary">添加</a>
 <table class="table table-condensed table-hover">
     <tr>

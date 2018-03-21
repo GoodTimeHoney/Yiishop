@@ -30,8 +30,21 @@ echo \liyuze\ztree\ZTree::widget([
 echo  $form->field($cate,"introduce")->textarea();
 echo  \yii\bootstrap\Html::submitButton("提交",["class"=>"btn btn-info"]);
 
+echo  \yii\bootstrap\Html::a("首页",["index"],["class"=>"btn btn-success"]);
+
 \yii\bootstrap\ActiveForm::end();
+
+//定义JS代码
+$js=<<<JS
+
+  var treeObj = $.fn.zTree.getZTreeObj("w1");
+  treeObj.expandAll(true);
+
+JS;
+//注册
+$this->registerJs($js);
 ?>
+
 <script>
     function onClick(e,treeId, treeNode) {
        $("#category-parend_id").val(treeNode.id);

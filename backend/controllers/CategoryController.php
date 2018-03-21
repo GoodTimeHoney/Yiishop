@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\models\Category;
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 use yii\helpers\Json;
 
 class CategoryController extends \yii\web\Controller
@@ -81,41 +82,52 @@ class CategoryController extends \yii\web\Controller
             //绑定数据
             $cate->load($request->post());
             if($cate->validate()){
-                //如果parend_id=0,添加一级分类
-                if($cate->parend_id==0){
-                    //一级分类
-                    $cate->makeRoot();
-                    //提示信息
-                    \Yii::$app->session->setFlash("success","创建一级分类".$cate->name."成功");
-                    //刷新
-                    return $this->refresh();
-                }else{
-                    //二级分类
-                    //找到父分类对象
-                    $cateParent=Category::findOne($cate->parend_id);
-                    $cate->prependTo($cateParent);
-                    //提示信息
-                    \Yii::$app->session->setFlash("success","创建{$cateParent->name}的子分类 ".$cate->name." 成功");
-                    //刷新
-                    return $this->refresh();
+
+
+               try{
+
+                   //如果parend_id=0,添加一级分类
+                   if($cate->parend_id==0){
+                       //一级分类
+                       $cate->makeRoot();
+                       //提示信息
+                       \Yii::$app->session->setFlash("success","创建一级分类".$cate->name."成功");
+                       //刷新
+                       return $this->refresh();
+                   }else{
+                       //二级分类
+                       //找到父分类对象
+                       $cateParent=Category::findOne($cate->parend_id);
+                       $cate->prependTo($cateParent);
+                       //提示信息
+                       \Yii::$app->session->setFlash("success","创建{$cateParent->name}的子分类 ".$cate->name." 成功");
+                       //刷新
+                       return $this->refresh();
+                    }
+
+                 } catch(Exception $exception){
+                   \Yii::$app->session->setFlash("danger",$exception->getMessage());
                 }
 
             }else{
 
                 var_dump($cate->errors);exit;
             }
-
-
         }
 
         //分配视图
         return $this->render("add",compact("cate","catesJson"));
     }
 
+
     //删除
     public  function  actionDelete($id){
-        if(Category::findOne($id)->delete()){
-            return $this->render(['index']);
+        try{
+            if(Category::findOne($id)->deleteWithChildren()){
+                return $this->redirect(['index']);
+            }
+        }catch(Exception $exception){
+            \Yii::$app->session->setFlash("danger",$exception->getMessage());
         }
     }
 }

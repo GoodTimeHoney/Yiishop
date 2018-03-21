@@ -73,4 +73,9 @@ class Category extends \yii\db\ActiveRecord
             'parend_id' => '父级id',
         ];
     }
+
+    //设置层数结构
+    public  function  getNameText(){
+        return str_repeat("---",$this->depth).$this->name;
+    }
 }

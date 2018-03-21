@@ -180,13 +180,13 @@ class BrandController extends \yii\web\Controller
                     return Json::encode($result);
                 }
             case "qiuniu":
-                $ak = '19wzF5o5gx3-rLRYGy4hWuLXsSkSbgC01o1PnEsS'; //应用的ID
-                $sk = 'YnFp544elS2sMRjCOde11npoWNghGsscWZcxkzTi'; //密钥
-                $domain = 'http://p5o8t6bf3.bkt.clouddn.com/';  //地址
-                $bucket = '1108xiaoming'; // 空间名称
+                $ak = 'TVi3MkdaW5EgHFJsE58GTZfhIL5wBh9J9ZIinBcm'; //应用的ID
+                $sk = '-NjZSH7ASFksOB7mp1eavUmvD_K8eaH9YxmHlSQD'; //密钥
+                $domain = 'http://p5u7x2bzw.bkt.clouddn.com/';  //地址
+                $bucket = 'yiishop'; // 空间名称
                 $zone = 'south_china'; //区域
                 $qiniu = new Qiniu($ak, $sk, $domain, $bucket, $zone);
-                $key = time();
+                $key = uniqid();
                 $key .= strtolower(strrchr($_FILES['file']['name'], '.'));
 
                 $qiniu->uploadFile($_FILES['file']['tmp_name'], $key);
