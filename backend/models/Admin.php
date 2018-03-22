@@ -22,11 +22,29 @@ use yii\web\IdentityInterface;
 class Admin extends \yii\db\ActiveRecord implements IdentityInterface
 {
 
+
+    public function scenarios()
+    {
+       /* return [
+            'create' => ['username', 'password', 'email'],
+            'update' => ['username', 'email'],
+        ];*/
+        $scenarios = parent::scenarios();//本行必填，不写的话就会报如上错误
+        $scenarios['create'] = ['username', 'password', 'email'];
+        $scenarios['update'] = ['username', 'email','password'];
+        return $scenarios;
+    }
+
+
+
+
+
     public function rules()
     {
         return [
-            [[ 'sait', 'email', 'token', 'add_time', 'token_create_time'], 'safe'],
-            [['password','username'],'required'],
+            [[ 'password','username','sait', 'email', 'token', 'add_time', 'token_create_time'], 'safe'],
+           [['username', 'email'], 'required', 'on' => ['create', 'update']],
+            [['password'], 'required', 'on' => 'create'],
             ["email","email"],
         ];
     }
@@ -99,7 +117,8 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        // TODO: Implement getAuthKey() method.
+        //得到令牌
+        return $this->token;
     }
 
     /**
@@ -112,6 +131,8 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        // TODO: Implement validateAuthKey() method.
+        //验证令牌
+        return $this->token===$authKey;
+
     }
 }

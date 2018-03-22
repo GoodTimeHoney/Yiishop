@@ -8,9 +8,10 @@
                 <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-                <p>Alexander Pierce</p>
+                <p><?=Yii::$app->user->identity->username?></p>
 
-                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                <a href="#"><i class="fa fa-circle text-success"></i>
+                <?=Yii::$app->user->isGuest?"离线":"上线"?></a>
             </div>
         </div>
 
@@ -30,10 +31,10 @@
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
-                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
-                    ['label' => '文章列表', 'icon' => 'file-code-o', 'url' => ['/article/index']],
-                    ['label' => '文章分类', 'icon' => 'dashboard', 'url' => ['/article-categroy/index']],
-                    ['label' => '货物分类', 'icon' => 'dashboard', 'url' => ['/category/index']],
+                    ['label' => '管理员', 'icon' => 'user-circle-o', 'url' => ['/admin/index']],
+                    ['label' => '文章列表', 'icon' => 'book', 'url' => ['/article/index']],
+                    ['label' => '文章分类', 'icon' => 'bookmark', 'url' => ['/article-categroy/index']],
+                    ['label' => '货物分类', 'icon' => 'shopping-cart', 'url' => ['/category/index']],
 
                     ['label' => '文学分类', 'url' => ['/article-categroy/index'], 'visible' => Yii::$app->user->isGuest],
                     [

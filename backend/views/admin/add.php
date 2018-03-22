@@ -8,9 +8,8 @@
 /** @var $this \yii\web\View */
 $form=\yii\bootstrap\ActiveForm::begin();
 echo $form->field($admin,"username");
-echo $form->field($admin,"password");
+echo $form->field($admin,"password")->textInput(["value"=>""]);
 echo $form->field($admin,"email");
-echo $form->field($admin,"token");
 echo \yii\bootstrap\Html::submitButton("提交",["class"=>"btn btn-info"]);
 
 \yii\bootstrap\ActiveForm::end();

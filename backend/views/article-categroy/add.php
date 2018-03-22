@@ -9,7 +9,7 @@
 $form=\yii\bootstrap\ActiveForm::begin();
 echo $form->field($artCate,"name");
 echo $form->field($artCate,"sort");
-echo $form->field($artCate,"status")->inline()->radioList(["下线","上线"],["value"=>1]);
+echo $form->field($artCate,"status")->inline()->radioList(["上线","下线"],["value"=>0]);
 echo $form->field($artCate,"introduce")->textarea();
 echo $form->field($artCate,"is_help")->inline()->radioList(["不帮助","帮助"],["value"=>0]);
 echo \yii\bootstrap\Html::submitButton("提交",["class"=>"btn btn-info"]);

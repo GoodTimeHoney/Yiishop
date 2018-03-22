@@ -28,12 +28,13 @@ class AdminController extends \yii\web\Controller
            //判断用户是否存在
              if($admin){
                  //用户存在
-                 if($admin->password==$model->password){
-                     \Yii::$app->user->login($admin);
+                 //var_dump($admin->password);exit;
+                 if(\Yii::$app->security->validatePassword($model->password,$admin->password)){
+                     \Yii::$app->user->login($admin,$model->rememberMe?3600*24*7:0);
 
                      //保存
                      $admin->last_login_time=time();
-                     $admin->last_login_ip=\Yii::$app->request->userIP;
+                     $admin->last_login_ip=ip2long(\Yii::$app->request->userIP);
 //                     var_dump($admin->last_login_ip);exit;
 
                      if($admin->save()){
@@ -63,10 +64,16 @@ class AdminController extends \yii\web\Controller
      //会员添加
     public  function  actionAdd(){
          $admin=new  Admin();
+        $admin->setScenario('create');
          $request=\Yii::$app->request;
          if($request->isPost){
              $admin->load($request->post());
              if($admin->validate()){
+
+                 //给密码加密
+                 $admin->password=\Yii::$app->security->generatePasswordHash($admin->password);
+                 //随机生成令牌
+                 $admin->token=\Yii::$app->security->generateRandomString();
                  $admin->token_create_time=time();
                  $admin->add_time=time();
                      if($admin->save()){
@@ -83,14 +90,23 @@ class AdminController extends \yii\web\Controller
     //会员编辑
     public  function  actionEdit($id){
         $admin=Admin::findOne($id);
+        $admin->setScenario('update');
+        $password=$admin->password;
         $request=\Yii::$app->request;
         if($request->isPost){
             $admin->load($request->post());
             if($admin->validate()){
+
+                //给密码加密
+
+                $admin->password=$admin->password?\Yii::$app->security->generatePasswordHash($admin->password):$password;
+
+                //随机生成令牌
+                $admin->token=\Yii::$app->security->generateRandomString();
                 $admin->token_create_time=time();
                 $admin->add_time=time();
                 if($admin->save()){
-                    \Yii::$app->session->setFlash("success","添加成功");
+                    \Yii::$app->session->setFlash("success","编辑成功");
                     return $this->redirect(["index"]);
                 }
             }else{

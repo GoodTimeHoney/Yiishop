@@ -16,7 +16,7 @@ class LoginForm extends  Model
    //1.设置属性
     public  $username;
     public  $password;
-
+    public  $rememberMe=true;
     //2.设置规则
     public  function  rules()
     {
