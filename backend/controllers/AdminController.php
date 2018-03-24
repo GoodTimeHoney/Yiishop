@@ -3,8 +3,10 @@
 namespace backend\controllers;
 
 use backend\models\Admin;
+use backend\models\AuthItem;
 use backend\models\LoginForm;
 use yii\bootstrap\Html;
+use yii\helpers\ArrayHelper;
 
 class AdminController extends \yii\web\Controller
 {
@@ -65,9 +67,18 @@ class AdminController extends \yii\web\Controller
     public  function  actionAdd(){
          $admin=new  Admin();
         $admin->setScenario('create');
+
+       // $auth=new  AuthItem();
+        //找到所有的角色
+        $adminRoles=AuthItem::find()->where("type=1")->asArray()->all();
+          $adminRole=ArrayHelper::map($adminRoles,"name","name");
+//          var_dump($adminRole);exit;
+
          $request=\Yii::$app->request;
          if($request->isPost){
+
              $admin->load($request->post());
+
              if($admin->validate()){
 
                  //给密码加密
@@ -77,6 +88,14 @@ class AdminController extends \yii\web\Controller
                  $admin->token_create_time=time();
                  $admin->add_time=time();
                      if($admin->save()){
+
+                       //  var_dump($admin->id);exit;
+                  //添加权限
+                 $auth=\Yii::$app->authManager;
+                 $role=$auth->getRole($admin->adminRole[0]);
+                 $auth->assign($role,$admin->id);
+
+
                          \Yii::$app->session->setFlash("success","添加成功");
                          return $this->redirect(["index"]);
                      }
@@ -84,7 +103,7 @@ class AdminController extends \yii\web\Controller
                  var_dump($admin->errors);exit;
              }
          }
-         return $this->render("add",compact("admin"));
+         return $this->render("add",compact("admin","adminRole"));
     }
 
     //会员编辑

@@ -22,7 +22,7 @@ use yii\web\IdentityInterface;
 class Admin extends \yii\db\ActiveRecord implements IdentityInterface
 {
 
-
+    public $adminRole;
     public function scenarios()
     {
        /* return [
@@ -30,7 +30,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'update' => ['username', 'email'],
         ];*/
         $scenarios = parent::scenarios();//本行必填，不写的话就会报如上错误
-        $scenarios['create'] = ['username', 'password', 'email'];
+        $scenarios['create'] = ['username', 'password', 'email',"adminRole"];
         $scenarios['update'] = ['username', 'email','password'];
         return $scenarios;
     }
@@ -46,6 +46,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
            [['username', 'email'], 'required', 'on' => ['create', 'update']],
             [['password'], 'required', 'on' => 'create'],
             ["email","email"],
+          //  ["adminRole","safe",'on' => ['create', 'update']],
         ];
     }
 
@@ -65,6 +66,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'add_time' => '注册时间',
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登录ip',
+            'adminRole'=>'角色'
         ];
     }
 

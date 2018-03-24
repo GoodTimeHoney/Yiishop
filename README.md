@@ -60,3 +60,5 @@ environments/            contains environment-based overrides
 ```
 # day4-day5
 此项目主要是goods、goods_gallery、goods_intro和admin的运用。在这两天的运用中我们学习到了无限极分类，多图上传，富文本，和ztree的用法，在admin的登录过程，我们一定要记得重写，切记别入坑，当然我也知道了怎么获取客户端的地址---ipYii::$app->request->userIP。
+# day7
+RBAC的流程慢慢的清除了，掌握锅炉器的两张方法，怎样获取当前的路由等等....

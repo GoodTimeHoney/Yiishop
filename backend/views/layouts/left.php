@@ -30,40 +30,7 @@
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
-                'items' => [
-                    ['label' => '管理员', 'icon' => 'user-circle-o', 'url' => ['/admin/index']],
-                    ['label' => '文章列表', 'icon' => 'book', 'url' => ['/article/index']],
-                    ['label' => '文章分类', 'icon' => 'bookmark', 'url' => ['/article-categroy/index']],
-                    ['label' => '货物分类', 'icon' => 'shopping-cart', 'url' => ['/category/index']],
-
-                    ['label' => '文学分类', 'url' => ['/article-categroy/index'], 'visible' => Yii::$app->user->isGuest],
-                    [
-                        'label' => '商品管理',
-                        'icon' => 'share',
-                        'url' => '#',
-                        'items' => [
-                            ['label' => '商品列表', 'icon' => 'file-code-o', 'url' => ['/goods/index'],],
-                            ['label' => '商品添加', 'icon' => 'dashboard', 'url' => ['/goods/add'],],
-                            [
-                                'label' => 'Level One',
-                                'icon' => 'circle-o',
-                                'url' => '#',
-                                'items' => [
-                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
-                                    [
-                                        'label' => 'Level Two',
-                                        'icon' => 'circle-o',
-                                        'url' => '#',
-                                        'items' => [
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
+                'items' => \backend\models\Mulu::menu()
             ]
         ) ?>
 
