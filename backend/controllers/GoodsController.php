@@ -14,16 +14,6 @@ use yii\web\UploadedFile;
 
 class GoodsController extends \yii\web\Controller
 {
-   public  function  behaviors()
-   {
-       return [
-            'rbac'=>[
-                'class'=>RbacFilter::className()
-            ],
-
-       ];
-   }
-
     //现实列表
     public function actionIndex()
     {

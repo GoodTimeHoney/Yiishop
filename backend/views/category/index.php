@@ -18,7 +18,7 @@
                     'parend_id',
                     'introduce',
                    'depth',
-                   ['class' => 'yii\grid\ActionColumn']
+                   ['class' => \backend\components\ActionColumn::className()]
 
                 ]
             ]); ?>

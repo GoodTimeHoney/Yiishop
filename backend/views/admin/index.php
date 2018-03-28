@@ -6,7 +6,6 @@
         <th>id</th>
         <th>用户名</th>
         <th>邮箱</th>
-        <th>口令</th>
         <th>口令创建时间</th>
         <th>添加时间</th>
         <th>操作</th>
@@ -18,7 +17,6 @@
             <td class="active"><?=$admin->id?></td>
             <td class="active"><?=$admin->username?></td>
             <td class="info"><?=$admin->email?></td>
-            <td class="success"><?=$admin->token?></td>
             <td class="info"><?=date("Y-m-d h:i:s",$admin->token_create_time)?></td>
             <td class="success"><?=date("Y-m-d h:i:s",$admin->add_time)?></td>
             <td class="active">

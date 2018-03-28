@@ -7,6 +7,12 @@ $params = array_merge(
 );
 
 return [
+    'modules' => [
+        'rbac' => [
+            'class' => 'mdm\admin\Module',
+          // 'layout' => 'left-menu',
+        ]
+    ],
 //    //全局注入
 //    'as rbac'=>[
 //        'class'=>\backend\filters\RbacFilter::className()
@@ -15,20 +21,32 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+   // 'modules' => [],
     'components' => [
-       /* 'view' => [
-            'theme' => [
-                'pathMap' => [
-                    '@app/views' => '@vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app'
+        //语言包配置
+        'i18n'=>[
+            'translations'=>[
+                '*'=>[
+                    'class'=>'yii\i18n\PhpMessageSource',
+                    'fileMap'=>[
+                        'common'=>'common.php',
+                    ],
                 ],
             ],
-        ],*/
+        ],
+        /* 'view' => [
+             'theme' => [
+                 'pathMap' => [
+                     '@app/views' => '@vendor/dmstr/yii2-adminlte-asset/example-views/yiisoft/yii2-app'
+                 ],
+             ],
+         ],*/
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],
         'user' => [
-            'identityClass' => \backend\models\Admin::className(),
+            //\backend\models\Admin::className()
+            'identityClass' =>\backend\models\Admin::className(),
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
@@ -59,4 +77,20 @@ return [
 
     ],
     'params' => $params,
+    //全局注入
+    'as access' => [
+        'class' => 'mdm\admin\components\AccessControl',
+        'allowActions' => [
+           //  '*',
+            //'site/*',
+            'admin/login',
+            'admin/logout',
+            'some-controller/some-action',
+            // The actions listed here will be allowed to everyone including guests.
+            // So, 'admin/*' should not appear here in the production, of course.
+            // But in the earlier stages of your development, you may probably want to
+            // add a lot of actions here until you finally completed setting up rbac,
+            // otherwise you may not even take a first step.
+        ]
+    ],
 ];
