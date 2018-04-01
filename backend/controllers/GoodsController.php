@@ -14,6 +14,21 @@ use yii\web\UploadedFile;
 
 class GoodsController extends \yii\web\Controller
 {
+
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+                'config' => [
+                    "imageUrlPrefix"  => "http://admin.yiishop.com",//图片访问路径前缀
+            ],
+            ]
+        ];
+    }
+
+
+
     //现实列表
     public function actionIndex()
     {

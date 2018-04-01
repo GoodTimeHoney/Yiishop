@@ -2,10 +2,15 @@
 
 namespace frontend\controllers;
 
+use backend\models\Category;
+use backend\models\Goods;
 use frontend\models\LoginForm;
+use frontend\models\Shopper;
 use frontend\models\User;
 use Mrgoon\AliSms\AliSms;
 use yii\helpers\Json;
+use yii\web\Cookie;
+use yii\web\Request;
 
 class UserController extends \yii\web\Controller
 {
@@ -121,6 +126,53 @@ public  function  actionLogin(){
                          //var_dump("密码没毛病");
                           \Yii::$app->user->login($user,$model->rememberMe?3600*24*7:0);
 //                          exit("111");
+
+                         //同步本地cookie中的购物车到数据库中去
+                           //1.取出cookie中的数据包
+                         $getCookie=\Yii::$app->request->cookies;
+                         $cart=$getCookie->getValue("cart",[]);
+                           //2..把数据同步到数据库中去
+                           $userId=\Yii::$app->user->id;
+                           foreach ($cart as $goodId=>$num){
+                               $cart_goods=Shopper::find()->where(["user_id"=>$userId,"goods_id"=>$goodId])->one();
+                               if($cart_goods){
+                                   //存在累加
+                                   $cart_goods->amount+=(int)$num;
+                                   $cart_goods->save();
+                                   unset($cart[$goodId]);
+                                   //1.实例化一个cookie对象
+                                   $setCookie=\Yii::$app->response->cookies;
+                                   //2.创建一个cookie对象
+                                   $cookie=new Cookie([
+                                       "name" => 'cart',
+                                       "value" =>$cart,
+                                   ]);
+                                   //3.添加cookie对象
+                                   $setCookie->add($cookie);
+                               }else{
+                                   $cart_goods=new Shopper();
+                                   //新增
+                                   $cart_goods->user_id=$userId;
+                                   $cart_goods->goods_id=$goodId;
+                                   $cart_goods->amount=(int)$num;
+                                   $cart_goods->save();
+                                   unset($cart[$goodId]);
+                                   //1.实例化一个cookie对象
+                                   $setCookie=\Yii::$app->response->cookies;
+                                   //2.创建一个cookie对象
+                                   $cookie=new Cookie([
+                                       "name" => 'cart',
+                                       "value" =>$cart,
+                                   ]);
+                                   //3.添加cookie对象
+                                   $setCookie->add($cookie);
+
+                               }
+                           }
+
+                          //3.清空本地cookie中的数据
+
+
                          //保存
                          $user->login_time = time();
 //                         var_dump($user->login_ip);exit;
@@ -176,8 +228,18 @@ public  function  actionLogin(){
 
 
     //列表页
-    public  function  actionList(){
-        return $this->render("list");
+    public  function  actionList($id){
+        //通过分类id找到当前的对象
+        $cate=Category::findOne($id);
+//
+        //通过分类id找到所有的子孙分类
+        $sonCates=Category::find()->where(["tree"=>$cate->tree])->andWhere(['>=','lft',$cate->lft])->andWhere(['<=','rgt',$cate->rgt])->asArray()->all();
+        //二维转一维
+        $cateId=array_column($sonCates,"id");
+        //得到分类的所有商品
+        $goods=Goods::find()->where(["in","goods_category_id",$cateId])->andWhere(['is_on_sale'=>1])->orderBy("sort")->all();
+        //var_dump($goods);exit;
+        return $this->render("list",compact("goods"));
     }
 
 }

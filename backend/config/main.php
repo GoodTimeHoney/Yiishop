@@ -11,7 +11,7 @@ return [
         'rbac' => [
             'class' => 'mdm\admin\Module',
           // 'layout' => 'left-menu',
-        ]
+        ],
     ],
 //    //全局注入
 //    'as rbac'=>[

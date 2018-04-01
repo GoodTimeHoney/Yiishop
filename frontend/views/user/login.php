@@ -134,6 +134,19 @@
 <script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="/layer/layer.js"></script>
 <script>
+
+    function getQueryVariable(variable)
+    {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+
+
     $(function() {
 
         $(".login_btn").click(function () {
@@ -142,7 +155,13 @@
                 // console.dir(result);
                 if(result.status==1){
                     layer.msg(result.msg);
-                   window.location.href="/user/index";
+                    var url=getQueryVariable('url');
+                    if(url===false){
+                        window.location.href="/user/index";
+                    }else {
+                        window.location.href=decodeURIComponent(url);
+                    }
+
                 }
                 if(result.status==0){
                     layer.msg(result.msg);

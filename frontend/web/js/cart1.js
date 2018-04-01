@@ -5,7 +5,27 @@
 */
 
 $(function(){
-	
+
+    //总计金额
+    var total = 0;
+    $(".col5 span").each(function(){
+        total += parseFloat($(this).text());
+    });
+
+    $("#total").text(total.toFixed(2));
+
+    //删除
+    $(".col6 a").click(function () {
+    	var  tr=$(this).parent().parent()
+        var id=tr.attr("data-id");
+         $.getJSON("/goods/del-cart",{id:id},function (data) {
+               if(data.status){
+                 //删除爷爷
+				   tr.remove();
+			   }
+         });
+    });
+
 	//减少
 	$(".reduce_num").click(function(){
 		var amount = $(this).parent().find(".amount");
@@ -14,6 +34,17 @@ $(function(){
 		} else{
 			$(amount).val(parseInt($(amount).val()) - 1);
 		}
+
+		//保存减少功能 得到id和数量
+		var num=$(this).next().val();
+		var id=$(this).parent().parent().attr("data-id");
+		//发起ajax提交
+		$.getJSON('/goods/updata-cart',{id:id,amount:num},function (data) {
+
+        });
+
+
+
 		//小计
 		var subtotal = parseFloat($(this).parent().parent().find(".col3 span").text()) * parseInt($(amount).val());
 		$(this).parent().parent().find(".col5 span").text(subtotal.toFixed(2));
@@ -39,8 +70,17 @@ $(function(){
 			total += parseFloat($(this).text());
 		});
 
-		$("#total").text(total.toFixed(2));
+       //保存添加功能
+        var num=$(this).prev().val();
+        var id=$(this).parent().parent().attr("data-id");
+        //发起ajax提交
+        $.getJSON('/goods/updata-cart',{id:id,amount:num},function (data) {
+        });
+
+       // console.log(num1,id1);
+        $("#total").text(total.toFixed(2));
 	});
+
 
 	//直接输入
 	$(".amount").blur(function(){
@@ -51,13 +91,7 @@ $(function(){
 		//小计
 		var subtotal = parseFloat($(this).parent().parent().find(".col3 span").text()) * parseInt($(this).val());
 		$(this).parent().parent().find(".col5 span").text(subtotal.toFixed(2));
-		//总计金额
-		var total = 0;
-		$(".col5 span").each(function(){
-			total += parseFloat($(this).text());
-		});
 
-		$("#total").text(total.toFixed(2));
 
 	});
 });
