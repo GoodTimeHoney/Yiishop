@@ -11,6 +11,7 @@
 
 	<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
 	<script type="text/javascript" src="/js/cart2.js"></script>
+    <script type="text/javascript" src="/layer/layer.js"></script>
 
 </head>
 <body>
@@ -36,10 +37,10 @@
 		</div>
 	</div>
 	<!-- 页面头部 end -->
-	
 	<div style="clear:both;"></div>
-
 	<!-- 主体部分 start -->
+    <form>
+        <input name="_csrf-frontend" type="hidden"  value="<?= Yii::$app->request->csrfToken ?>">
 	<div class="fillin w990 bc mt15">
 		<div class="fillin_hd">
 			<h2>填写并核对订单信息</h2>
@@ -50,57 +51,13 @@
 			<div class="address">
 				<h3>收货人信息</h3>
 				<div class="address_info">
-				<p>
                     <?php foreach ($addresses as $address): ?>
-					<input type="radio" value="1" name="address_id"/><?=$address->user_name?>  <?=$address->mobile?>  <?=$address->province?> <?=$address->city?> <?=$address->area?> <?=$address->address?> </p>
-                     <?php endforeach;?>
+			 	<p>
+					<input type="radio" value="<?=$address->id?>" name="address_id"  <?=$address->status?"checked":""?>/><?=$address->user_name?>  <?=$address->mobile?>  <?=$address->province?> <?=$address->city?> <?=$address->area?> <?=$address->address?>
+                </p>
+                    <?php endforeach;?>
 				</div>
 
-				<div class="address_select">
-					<form action="" class="none" name="address_form">
-						<ul>
-							<li>
-								<label for=""><span>*</span>收 货 人：</label>
-								<input type="text" name="" class="txt" />
-							</li>
-							<li>
-								<label for=""><span>*</span>所在地区：</label>
-								<select name="" id="">
-									<option value="">请选择</option>
-									<option value="">北京</option>
-									<option value="">上海</option>
-									<option value="">天津</option>
-									<option value="">重庆</option>
-									<option value="">武汉</option>
-								</select>
-
-								<select name="" id="">
-									<option value="">请选择</option>
-									<option value="">朝阳区</option>
-									<option value="">东城区</option>
-									<option value="">西城区</option>
-									<option value="">海淀区</option>
-									<option value="">昌平区</option>
-								</select>
-
-								<select name="" id="">
-									<option value="">请选择</option>
-									<option value="">西二旗</option>
-									<option value="">西三旗</option>
-									<option value="">三环以内</option>
-								</select>
-							</li>
-							<li>
-								<label for=""><span>*</span>详细地址：</label>
-								<input type="text" name="" class="txt address"  />
-							</li>
-							<li>
-								<label for=""><span>*</span>手机号码：</label>
-								<input type="text" name="" class="txt" />
-							</li>
-						</ul>
-					</form>
-				</div>
 			</div>
 			<!-- 收货人信息  end-->
 
@@ -121,7 +78,7 @@
                            <?php foreach ($goodsSend as  $key=>$goodSend):?>
 							<tr class="<?=$key==0?"cur":""?>">
 								<td>
-									<input type="radio" name="delivery" checked="checked" /><?=$goodSend->send_way?>
+									<input type="radio" name="delivery" value="<?=$goodSend->id?>" checked="checked" /><?=$goodSend->send_way?>
 								</td>
 								<td>￥<?=$goodSend->send_money?></td>
 								<td><?=$goodSend->send_rule?></td>
@@ -141,7 +98,7 @@
 					<table>
                         <?php foreach ($payGoods as $key=>$payGood): ?>
 						<tr class="<?=$key==0?"cur":""?>">
-							<td class="col1"><input type="radio" name="pay" /><?=$payGood->pay_way?></td>
+							<td class="col1"><input type="radio" value="<?=$payGood->id?>" name="pay" checked="checked" /><?=$payGood->pay_way?></td>
 							<td class="col2"><?=$payGood->pay_rule?></td>
 						</tr>
 						<?php endforeach;?>
@@ -186,19 +143,11 @@
 								<ul>
 									<li>
 										<span><?php
-                                            $totalNum=0;
-                                            foreach ($goods as $good){
-                                                $totalNum+=$cart[$good->id];
-                                            }
                                             echo $totalNum;
                                             ?>
                                             件商品，总商品金额：</span>
 										<em >￥
                                            <span id="totalPrice"><?php
-                                               $totalPrice=0;
-                                               foreach ($goods as $good){
-                                                   $totalPrice+=$good->shop_price*$cart[$good->id];
-                                               }
                                                echo $totalPrice;
                                                ?></span>
                                         </em>
@@ -226,11 +175,12 @@
 		</div>
 
 		<div class="fillin_ft">
-			<a href=""><span>提交订单</span></a>
+			<a href="javascript:;" id="sub_btn"><span>提交订单</span></a>
 			<p>应付总额：<strong>￥<span id="endPrice">5076.00</span>元</strong></p>
 			
 		</div>
 	</div>
+    </form>
 	<!-- 主体部分 end -->
 
 	<div style="clear:both;"></div>
@@ -272,10 +222,23 @@
              $("#yunfei").text(result.toFixed(2));
 
              //最后金额
-              var endPrice=totalPrice-result;
+              var endPrice=totalPrice+result;
               $("#lastPrice").text(endPrice.toFixed(2));
               //console.debug(endPrice);
               $("#endPrice").text(endPrice.toFixed(2));
+          });
+
+
+          $("#sub_btn").click(function () {
+             //提交数据
+              $.post('/order/index',$("form").serialize(),function(data) {
+                    if(data.status){
+                        layer.msg(data.msg);
+                        window.location.href="/order/flow-there";
+                    }else{
+                        layer.msg(data.msg);
+                    }
+              },'json');
           });
       });
 
