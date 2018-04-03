@@ -232,9 +232,10 @@
           $("#sub_btn").click(function () {
              //提交数据
               $.post('/order/index',$("form").serialize(),function(data) {
+                  console.log(data);
                     if(data.status){
                         layer.msg(data.msg);
-                        window.location.href="/order/flow-there";
+                        window.location.href="/order/flow-there?id="+data.id;
                     }else{
                         layer.msg(data.msg);
                     }
