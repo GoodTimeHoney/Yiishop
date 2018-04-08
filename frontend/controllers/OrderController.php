@@ -262,4 +262,33 @@ class OrderController extends \yii\web\Controller
 
     }
 
+    //支付成功
+   public  function actionStatus($id){
+        $order=Order::findOne($id);
+        return Json::encode($order);
+   }
+   //定时清理无支付
+   public  function  actionClear(){
+       //1.找出超时未支付
+         $orders=Order::find()->where(['status'=>1])->andWhere(['<','create_time',time()-300])->asArray()->all();
+         $ordersIds=array_column($orders,"id");
+       //var_dump($ordersId);exit;
+       //2.给所有符合条件订单的status=0已取消
+         Order::updateAll(['status'=>0],['in','id',$ordersIds]);
+
+       //打订单对应的商品库存还原
+         foreach ($orders as $order){
+             //每个订单对应的商品详情
+             $orderDetails=OrderDetail::find()->where(['order_info_id'=>$order['id']])->all();
+             //var_dump($orderDetails);exit;
+             foreach ($orderDetails as $orderDetail){
+                 //还原库存
+                 $good=Goods::findOne($orderDetail->goods_id);
+                 $good->stock+=$orderDetail->amount;
+                 $good->save();
+              //Goods::updateAllCounters(['stock'=>$orderDetail->amount],['id'=>$orderDetail->goods_id]);
+             }
+         }
+   }
+
 }

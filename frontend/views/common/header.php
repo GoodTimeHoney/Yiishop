@@ -87,6 +87,9 @@
 
     <div style="clear:both;"></div>
 
+    <?php
+    ob_start();//开启缓存
+    ?>
     <!-- 导航条部分 start -->
     <div class="nav w1210 bc mt10">
         <!--  商品分类部分 start-->
@@ -140,6 +143,21 @@
             <div class="right_corner fl"></div>
         </div>
     </div>
+    <?php
+     $html=ob_get_clean();
+     //判断首页还是其他页
+    $name=Yii::$app->controller->id."/".Yii::$app->controller->action->id=="user/index"?"index":"other";
+     if(Yii::$app->cache->get($name)){
+         echo Yii::$app->cache->get($name);
+     }else{
+         //存到缓存
+         Yii::$app->cache->set($name,$html);
+         echo $html;
+
+     }
+
+    ?>
+
     <!-- 导航条部分 end -->
 </div>
 <!-- 头部 end-->
